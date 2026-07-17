@@ -1,0 +1,9 @@
+source_id,dataset,score,metric,k,stable,keyed,change,reported_precision,manuscript_location
+manuscript_table2,BPC,RawCount,ndcg,10,0.8474,0.1702,-0.6772,4_decimal_places,Table 2 Panel A
+manuscript_table2,BPC,Centered count,ndcg,10,0.7103,0.1627,-0.5476,4_decimal_places,Table 2 Panel A
+manuscript_table2,BPC,Residualized (low tie),ndcg,10,0.1689,0.1685,-0.0004,4_decimal_places,Table 2 Panel A
+manuscript_table2,MovieLens,RawCount,ndcg,10,0.8380,0.2332,-0.6048,4_decimal_places,Table 2 Panel A
+manuscript_table2,MovieLens,Centered count,ndcg,10,0.8406,0.2341,-0.6065,4_decimal_places,Table 2 Panel A
+manuscript_table2,MovieLens,Popularity,ndcg,10,0.5905,0.5905,-0.000022,"stable/keyed: 4 decimal places; change: 2.2e-5",Table 2 Panel A
+manuscript_table2,BPC,RawCount,hit_or_recall,10,0.9997,0.3526,-0.6471,4_decimal_places,Table 2 Panel B
+manuscript_table2,MovieLens,RawCount,hit_or_recall,10,0.9390,0.4358,-0.5032,4_decimal_places,Table 2 Panel B

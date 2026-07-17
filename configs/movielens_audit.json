@@ -1,0 +1,139 @@
+{
+  "schema_version": 1,
+  "config_status": "evidence reconstruction for the locally present keyed run; the historical paired run manifest is absent",
+  "unknown_value_policy": "The literal string 'unknown' means the available manuscript and local archive do not establish the value. It is not a default.",
+  "applies_to": {
+    "manuscript_claims": "MovieLens rows in results/manuscript_table2.csv",
+    "local_snapshot": "results/local_movielens_keyed_snapshot.csv",
+    "identity_warning": "The local keyed-only values differ slightly from the manuscript keyed values and must not be substituted for them."
+  },
+  "dataset": {
+    "ratings": "MovieLens 25M",
+    "item_attributes": "MovieLens Tag Genome",
+    "exact_download_or_snapshot_identifier": "unknown",
+    "raw_file_checksums": "unknown",
+    "filters": [
+      "rating is at least 4.0",
+      "movie has Tag Genome data for the selected-tag processing universe"
+    ],
+    "counts_from_local_experiment_summary": {
+      "active_users": 162341,
+      "active_items": 13816,
+      "labels": 6,
+      "train_positive_interactions": 9887006,
+      "evaluated_users_and_rows": 10000,
+      "validation_positive_interactions_before_user_selection": "unknown",
+      "test_positive_interactions_before_user_selection": "unknown",
+      "all_filtered_positive_interactions": "unknown",
+      "frozen_audit_rows_present": false
+    }
+  },
+  "labels": {
+    "source": "Tag Genome relevance",
+    "names": [
+      "action",
+      "classic",
+      "visually appealing",
+      "based on a book",
+      "violence",
+      "sci-fi"
+    ],
+    "threshold": 0.7,
+    "comparison": "greater than or equal to",
+    "missing_tag_relevance_value": 0.0,
+    "tag_id_mapping_snapshot": "unknown"
+  },
+  "split": {
+    "type": "global chronological split after filtering positive ratings to Tag Genome movies",
+    "sort_key": "timestamp",
+    "train_fraction": 0.8,
+    "validation_fraction": 0.1,
+    "test_fraction": 0.1,
+    "within_user_split": false,
+    "test_user_selection": "If more than 10000 unique users occur in the global test partition, take the first 10000 unique user indices in test-row order; then retain the first test row per selected user.",
+    "maximum_test_users": 10000,
+    "rows_after_selection": 10000,
+    "selection_seed": "not used by the documented selection code"
+  },
+  "candidate_rows": {
+    "evaluation_universe": "sampled",
+    "candidates_per_complete_row": 31,
+    "relevant_items_per_row": 1,
+    "sampled_negatives_per_row": 30,
+    "construction_order": "held-out positive at column 0, followed by sampled negatives",
+    "candidate_sampling_seed": 42,
+    "negative_sampling_distribution": "uniform without replacement from the eligible active-item set",
+    "negative_exclusions": [
+      "the row's held-out positive",
+      "items in the user's training history"
+    ],
+    "not_excluded_by_the_local_script": [
+      "items in the user's validation history",
+      "other items in the user's test history"
+    ],
+    "candidate_seed_reset_for_each_method": true,
+    "frozen_candidate_ids_present": false,
+    "frozen_primary_scores_present": false,
+    "frozen_relevance_labels_present": false
+  },
+  "scores": {
+    "RawCount": "dot product of user tag-history counts and candidate binary tag attributes",
+    "Centered count": "tag-history score using item tags centered by their item-universe mean",
+    "Popularity": "training-interaction count for the item",
+    "additional_local_snapshot_methods": [
+      "po_user",
+      "sre",
+      "po_group",
+      "ips"
+    ]
+  },
+  "metrics": {
+    "cutoff_k": 10,
+    "reported": [
+      "NDCG@10",
+      "Hit@10 (equivalently Recall@10 for one relevant item)"
+    ],
+    "aggregation": "mean over evaluated rows"
+  },
+  "tie_policies": {
+    "stable_manuscript_policy": "descending primary score with input order retained inside exact ties",
+    "keyed_local_implementation": {
+      "seed": 20260318,
+      "key_inputs": [
+        "seed",
+        "user index",
+        "item index"
+      ],
+      "intended_position_independent": true,
+      "strict_row_order_invariance_guaranteed": false,
+      "guarantee_qualification": "Casting the secondary key to float32 permits collisions. Equal primary and secondary keys can retain input-order dependence, and no historical collision audit is preserved.",
+      "implementation_summary": "unsigned 64-bit mixing with wraparound, normalized by 2^64, cast to float32, then used as the ascending secondary key in lexicographic sorting",
+      "collision_rule_in_historical_implementation": "No explicit final identity key. Equal float32 keys are passed to NumPy lexsort/argsort behavior, so the resulting order can depend on input layout and sorting implementation.",
+      "archived_collision_audit_present": false
+    },
+    "historical_paired_stable_and_keyed_artifact_present": false,
+    "local_snapshot_policy": "keyed only"
+  },
+  "row_diagnostics": {
+    "any_tie_rate": "unknown",
+    "top_k_boundary_tie_rate": "unknown",
+    "positive_in_tie_rate": "unknown",
+    "top_k_set_change_rate": "unknown",
+    "positive_rank_change_rate": "unknown",
+    "archived_row_diagnostic_arrays_present": false
+  },
+  "missing_historical_inputs": [
+    "historical paired stable/keyed aggregate artifact",
+    "frozen candidate rows",
+    "per-row primary scores and relevance labels",
+    "MovieLens per-row tie diagnostics",
+    "historical float32 secondary-key collision audit",
+    "exact software environment for the historical paired audit"
+  ],
+  "source_records": [
+    "draft manuscript Sections 4.1-5.1 and Tables 1-2",
+    "local MovieLens Tag Genome experiment script",
+    "local MovieLens experiment summary",
+    "local keyed-only ranking_results.csv"
+  ]
+}
