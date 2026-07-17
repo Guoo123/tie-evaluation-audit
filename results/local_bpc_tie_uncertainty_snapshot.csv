@@ -1,0 +1,7 @@
+model,ndcg10_stable,ndcg10_hash,ndcg10_delta,ndcg10_random_mean,ndcg10_random_std,uncertainty_type,note
+centered_count,0.7103,0.1627,0.5477,0.6559,0.000429,deterministic_delta,stable-to-hash is a deterministic comparison; random-tie uses 10 seeds
+raw_count,0.8474,0.1702,0.6772,0.1865,0.00107,deterministic_delta,stable-to-hash is a deterministic comparison; random-tie uses 10 seeds
+sre,0.2201,0.1785,0.0416,0.1789,0.00036,deterministic_delta,stable-to-hash is a deterministic comparison; random-tie uses 10 seeds
+po_factor,0.1665,0.1662,0.0004,0.1662,0.00003,deterministic_delta,stable-to-hash is a deterministic comparison; random-tie uses 10 seeds
+po_group,0.1689,0.1685,0.0004,0.1685,0.00003,deterministic_delta,stable-to-hash is a deterministic comparison; random-tie uses 10 seeds
+po_user,0.1684,0.1680,0.0004,0.1680,0.00003,deterministic_delta,stable-to-hash is a deterministic comparison; random-tie uses 10 seeds

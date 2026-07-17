@@ -1,0 +1,5 @@
+source_id,dataset,score,diagnostic,k,value_fraction,reported_as,manuscript_location,qualification
+manuscript_results_text,BPC,RawCount,rows_with_any_exact_tie,NA,1.0,100%,Section 5.1,"Aggregate only; row-level diagnostics are absent from the archive"
+manuscript_results_text,BPC,RawCount,rows_with_tie_crossing_top_k_boundary,10,0.9994,99.94%,Section 5.1,"Aggregate only; row-level diagnostics are absent from the archive"
+manuscript_results_text,BPC,RawCount,rows_with_positive_in_exact_tie,NA,0.9884,98.84%,Section 5.1,"Aggregate only; row-level diagnostics are absent from the archive"
+manuscript_results_text,BPC,Residualized (low tie),rows_with_any_exact_tie,NA,0.0040,0.40%,Section 5.1,"Aggregate only; the manuscript does not report the other row diagnostics for this score"

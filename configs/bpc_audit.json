@@ -1,0 +1,143 @@
+{
+  "schema_version": 1,
+  "config_status": "evidence reconstruction; not a frozen-run manifest",
+  "unknown_value_policy": "The literal string 'unknown' means the available manuscript and local archive do not establish the value. It is not a default.",
+  "applies_to": {
+    "manuscript_claims": "BPC rows in results/manuscript_table2.csv and results/manuscript_bpc_tie_diagnostics.csv",
+    "local_snapshot": "results/local_bpc_tie_uncertainty_snapshot.csv",
+    "identity_warning": "The manuscript aggregates and local derivative snapshot are related records, not interchangeable provenance sources."
+  },
+  "dataset": {
+    "name": "Amazon Reviews 2023",
+    "release_label": "2023",
+    "category": "Beauty_and_Personal_Care",
+    "exact_raw_snapshot_identifier": "unknown",
+    "raw_file_checksums": "unknown",
+    "filter": {
+      "name": "3-core",
+      "min_user_interactions": 3,
+      "min_item_interactions": 3
+    },
+    "counts_from_local_dataset_summary": {
+      "users": 2073945,
+      "items": 389478,
+      "train_interactions": 7528500,
+      "validation_interactions": 2073945,
+      "test_interactions": 2073945,
+      "frozen_audit_rows_present": false
+    }
+  },
+  "labels": {
+    "representation": "three binary product attributes",
+    "names": [
+      "fragrance_free",
+      "cruelty_free",
+      "sulfate_free"
+    ],
+    "unknown_as_negative": true,
+    "numeric_attribute_threshold": "unknown",
+    "exact_extraction_lexicon_version": "unknown",
+    "manuscript_description": "The item attributes are fragrance-free, cruelty-free, and sulfate-free."
+  },
+  "outcome_setting_from_resolved_pipeline_config": {
+    "mode": "scaled_rating",
+    "positive_threshold": 4.0,
+    "qualification": "The archive establishes this pipeline setting, but the manuscript does not establish that it was an interaction-inclusion threshold for the frozen ranking rows."
+  },
+  "split": {
+    "type": "chronological holdout within user",
+    "sort_keys": [
+      "timestamp",
+      "item_id"
+    ],
+    "validation_holdout_per_eligible_user": 1,
+    "test_holdout_per_eligible_user": 1,
+    "minimum_train_interactions": 1,
+    "test_relevance": "one held-out interaction is the relevant item",
+    "rating_based_relevance_filter": "unknown"
+  },
+  "candidate_rows": {
+    "evaluation_universe": "sampled",
+    "rows": 2073945,
+    "candidates_per_complete_row": 31,
+    "relevant_items_per_row": 1,
+    "sampled_negatives_per_row": 30,
+    "construction_order": "held-out positive at column 0, followed by sampled negatives",
+    "candidate_sampling_seed": 42,
+    "negative_sampling_distribution": "uniform integer draws over indexed items with rejection",
+    "negative_exclusions": [
+      "the row's held-out positive",
+      "the user's pre-test train interactions",
+      "the user's pre-test validation interaction"
+    ],
+    "history_source": "concatenated train and validation splits",
+    "duplicate_negative_rule": "The archived sampler implementation does not explicitly reject duplicate negatives within a row.",
+    "historical_duplicate_count": "unknown",
+    "short_row_rule": "The implementation can return fewer than 30 negatives after its attempt cap; the historical short-row count is unknown.",
+    "frozen_candidate_ids_present": false,
+    "frozen_primary_scores_present": false,
+    "frozen_relevance_labels_present": false
+  },
+  "scores": {
+    "RawCount": "dot product of a user's historical attribute counts and a candidate's binary attribute vector",
+    "Centered count": "RawCount-style score using mean-centered item-attribute representations",
+    "Residualized (low tie)": "binary item attribute minus its prediction from item features, as described by the manuscript",
+    "local_alias_warning": "The local snapshot contains several residual-based internal names. The absent original aggregate files prevent a row-level verification of every manuscript-to-internal score alias."
+  },
+  "metrics": {
+    "cutoff_k": 10,
+    "reported": [
+      "NDCG@10",
+      "Hit@10 (equivalently Recall@10 for one relevant item)"
+    ],
+    "aggregation": "mean over rows"
+  },
+  "tie_policies": {
+    "stable": "descending primary score with input order retained inside exact ties",
+    "keyed": {
+      "seed": 20260316,
+      "key_inputs": [
+        "seed",
+        "user index",
+        "item index"
+      ],
+      "intended_position_independent": true,
+      "strict_row_order_invariance_guaranteed": false,
+      "guarantee_qualification": "Casting the secondary key to float32 permits collisions. Without a collision-hardened final key and a preserved collision audit, strict independence from input order is not established.",
+      "implementation_summary": "unsigned 64-bit mixing with wraparound, normalized by 2^64, cast to float32, then used as the secondary ascending key",
+      "collision_rule_in_historical_implementation": "No explicit final identity key. Equal float32 keys are passed to NumPy argsort, so the resulting order can depend on input layout and sorting implementation.",
+      "archived_collision_audit_present": false
+    },
+    "randomized_snapshot": {
+      "documented_default_seeds_in_local_script": [
+        0,
+        1,
+        2,
+        3,
+        4,
+        5,
+        6,
+        7,
+        8,
+        9
+      ],
+      "run_manifest_present": false,
+      "qualification": "The local derivative CSV says 10 seeds, but the retained source script uses tiny jitter cast to float32 instead of an independently sorted secondary key. The perturbation can round away and is not a valid uniform-tie estimator. The original random-tie output is also absent."
+    }
+  },
+  "missing_historical_inputs": [
+    "frozen candidate rows",
+    "per-row primary scores and relevance labels",
+    "original outputs/tie_artifact_experiment directory",
+    "original BPC per-row tie diagnostics",
+    "historical float32 secondary-key collision audit",
+    "exact software environment for the historical audit"
+  ],
+  "source_records": [
+    "draft manuscript Sections 4.1-5.1 and Tables 1-2",
+    "local resolved BPC pipeline configuration",
+    "local BPC dataset summary",
+    "local archived candidate-sampling and ranking implementations",
+    "local derivative tie uncertainty summary"
+  ]
+}
