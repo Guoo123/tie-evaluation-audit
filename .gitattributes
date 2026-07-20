@@ -1,0 +1,14 @@
+* text=auto eol=lf
+
+# Keep generated datasets and binary artifacts byte-for-byte.
+*.gz binary
+*.jpeg binary
+*.jpg binary
+*.npy binary
+*.npz binary
+*.parquet binary
+*.pdf binary
+*.pkl binary
+*.png binary
+*.tar binary
+*.zip binary
