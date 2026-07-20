@@ -1,0 +1,26 @@
+{
+  "manifest_status": "sanitized_for_anonymous_review",
+  "source": "development ZIP supplied for artifact construction",
+  "hosted_repository_origin": "omitted",
+  "source_commit": "omitted",
+  "dataset_name": "Beauty_and_Personal_Care",
+  "seed": 42,
+  "cv_mode": "oof",
+  "control_variate_folds": 3,
+  "label_names": [
+    "fragrance_free",
+    "cruelty_free",
+    "sulfate_free"
+  ],
+  "relevant_retained_objects": [
+    "dataset_summary.json",
+    "resolved_config.json",
+    "paper-writer aggregate tie-audit values"
+  ],
+  "missing_historical_objects": [
+    "frozen candidate rows",
+    "candidate score matrices",
+    "row-level tie-audit output directory"
+  ],
+  "note": "The original manifest also listed unrelated recommender baselines and local output paths. Those fields are omitted because this artifact is scoped to the tie-handling paper and anonymous review."
+}

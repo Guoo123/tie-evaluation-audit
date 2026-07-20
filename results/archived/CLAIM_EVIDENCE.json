@@ -1,0 +1,100 @@
+{
+  "schema_version": 1,
+  "evidence_boundary": {
+    "historical_row_level_replay": false,
+    "reason": "The supplied development ZIP did not contain historical frozen candidate rows or candidate-score matrices.",
+    "supported_checks": [
+      "paper-table arithmetic",
+      "dataset-count consistency",
+      "aggregate result provenance",
+      "end-to-end prospective regeneration",
+      "row-level replay of every newly regenerated run"
+    ]
+  },
+  "claims": [
+    {
+      "id": "bpc_dataset_counts",
+      "paper_location": "Table 1 and Section 4.2",
+      "values": {
+        "n_users": 2073945,
+        "n_items": 389478,
+        "n_train": 7528500,
+        "n_validation": 2073945,
+        "n_test": 2073945
+      },
+      "archived_source": "results/archived/bpc/dataset_summary.json",
+      "regenerated_source": "results/regenerated/bpc/run_summary.json::dataset"
+    },
+    {
+      "id": "bpc_raw_ndcg",
+      "paper_location": "Abstract and Table 2",
+      "values": {"stable": 0.8474, "archived_keyed": 0.1702, "change": -0.6772},
+      "archived_source": "results/archived/bpc/tie_audit_summary.csv::score=raw_count",
+      "regenerated_source": "results/regenerated/bpc/metrics_by_policy.csv::score=raw_count"
+    },
+    {
+      "id": "bpc_raw_hit",
+      "paper_location": "Abstract and Table 2",
+      "values": {"stable": 0.9997, "archived_keyed": 0.3526, "change": -0.6471},
+      "archived_source": "results/archived/bpc/tie_audit_summary.csv::score=raw_count",
+      "regenerated_source": "results/regenerated/bpc/metrics_by_policy.csv::score=raw_count"
+    },
+    {
+      "id": "bpc_raw_tie_diagnostics",
+      "paper_location": "Abstract and Section 5.1",
+      "values": {"any_tie_rate": 1.0, "boundary_tie_rate": 0.9994, "positive_in_tie_rate": 0.9884},
+      "archived_source": "results/archived/bpc/tie_audit_summary.csv::score=raw_count",
+      "regenerated_source": "results/regenerated/bpc/diagnostics.json::score=raw_count"
+    },
+    {
+      "id": "bpc_centered_ndcg",
+      "paper_location": "Table 2",
+      "values": {"stable": 0.7103, "archived_keyed": 0.1627, "change": -0.5476},
+      "archived_source": "results/archived/bpc/tie_audit_summary.csv::score=centered_count",
+      "regenerated_source": "results/regenerated/bpc/metrics_by_policy.csv::score=centered_count"
+    },
+    {
+      "id": "bpc_low_tie_control",
+      "paper_location": "Abstract, Table 2, and Section 5.1",
+      "values": {"stable_ndcg": 0.1689, "archived_keyed_ndcg": 0.1685, "any_tie_rate": 0.004},
+      "implementation_identity": "residualized_group_control (development name po_group), not item_residual_only (development name sre)",
+      "archived_source": "results/archived/bpc/tie_audit_summary.csv::score=residualized_group_control",
+      "regenerated_source": "results/regenerated/bpc/metrics_by_policy.csv::score=residualized_group_control"
+    },
+    {
+      "id": "movielens_dataset_counts",
+      "paper_location": "Table 1 and Section 4.2",
+      "values": {"n_users": 162341, "n_items": 13816, "n_train": 9887006, "n_test": 10000},
+      "archived_source": "results/archived/movielens/experiment_summary.json::data_stats",
+      "regenerated_source": "results/regenerated/movielens/run_summary.json::dataset"
+    },
+    {
+      "id": "movielens_raw_ndcg_hit",
+      "paper_location": "Abstract and Table 2",
+      "values": {"stable_ndcg": 0.8379994706637517, "archived_keyed_ndcg": 0.233234427725839, "stable_hit": 0.939, "archived_keyed_hit": 0.4358},
+      "archived_source": "results/archived/movielens/tie_audit_summary.csv::method=raw_count",
+      "regenerated_source": "results/regenerated/movielens/metrics_by_policy.csv::score=raw_count"
+    },
+    {
+      "id": "movielens_centered_ndcg",
+      "paper_location": "Table 2",
+      "values": {"stable": 0.8406188962928598, "archived_keyed": 0.2340918413743282},
+      "archived_source": "results/archived/movielens/tie_audit_summary.csv::method=centered_count",
+      "regenerated_source": "results/regenerated/movielens/metrics_by_policy.csv::score=centered_count"
+    },
+    {
+      "id": "movielens_popularity_control",
+      "paper_location": "Abstract and Table 2",
+      "values": {"stable": 0.59048725030301, "archived_keyed": 0.5904653925774852, "absolute_difference": 0.000021857725524765392},
+      "archived_source": "results/archived/movielens/tie_audit_summary.csv::method=pop_count",
+      "regenerated_source": "results/regenerated/movielens/metrics_by_policy.csv::score=popularity"
+    },
+    {
+      "id": "all_tied_theory",
+      "paper_location": "Section 3.2, Equations 1-2",
+      "values": {"candidate_count": 31, "cutoff": 10, "stable_hit": 1.0, "stable_ndcg": 1.0, "expected_hit": 0.3225806451612903, "expected_ndcg": 0.1466},
+      "code_source": "src/tie_eval/metrics.py::analytic_single_positive_expectation",
+      "verification_source": "src/tie_eval/verify.py::smoke_checks and tests/test_metrics.py"
+    }
+  ]
+}

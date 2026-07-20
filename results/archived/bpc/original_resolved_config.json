@@ -1,0 +1,154 @@
+{
+  "_clean": false,
+  "_resume": true,
+  "baselines": {
+    "bpr_batch_size": 1024,
+    "bpr_epochs": 4,
+    "bpr_lr": 0.01,
+    "bpr_rank": 16,
+    "bpr_weight_decay": 1e-06,
+    "pop_penalty_alpha": 0.25
+  },
+  "control_variate": {
+    "cv_mode": "oof",
+    "cv_n_folds": 3,
+    "group_smoothing": 5.0,
+    "mf_batch_size": 2048,
+    "mf_epochs": 4,
+    "mf_lr": 0.01,
+    "mf_rank": 8,
+    "mf_weight_decay": 1e-06,
+    "min_user_group_count": 2,
+    "use_mf": true
+  },
+  "data": {
+    "category": "Beauty_and_Personal_Care",
+    "dataset_name": "McAuley-Lab/Amazon-Reviews-2023",
+    "meta_path": "data/beauty_personal_care/raw/meta_categories/meta_Beauty_and_Personal_Care.jsonl",
+    "min_item_interactions": 3,
+    "min_user_interactions": 3,
+    "review_path": "data/beauty_personal_care/raw/review_categories/Beauty_and_Personal_Care.jsonl",
+    "source": "local_jsonl"
+  },
+  "device": "cuda",
+  "evaluation": {
+    "k_values": [
+      5,
+      10,
+      20
+    ],
+    "num_negative_samples": 30,
+    "pure_quantile": 0.75
+  },
+  "external_baselines": {
+    "macr": {
+      "base_model": "MF",
+      "batch_size": 2048,
+      "c": 40.0,
+      "device": "cuda",
+      "embedding_size": 64,
+      "enabled": false,
+      "epochs": 100,
+      "export_only": true,
+      "learning_rate": 0.001,
+      "macr_repo_path": "path/to/MACR",
+      "predictions_path": null,
+      "reg_weight": 0.0001
+    }
+  },
+  "groups": {
+    "include_category": true,
+    "include_price_bucket": true,
+    "include_store": true,
+    "min_item_support": 10
+  },
+  "hybrid_rerank": {
+    "alpha_values": [
+      0.0,
+      0.25,
+      0.5,
+      0.75,
+      1.0
+    ],
+    "base_models": [
+      "bpr_mf",
+      "popularity"
+    ],
+    "beta_values": [
+      0.0,
+      0.25,
+      0.5,
+      0.75,
+      1.0
+    ],
+    "enabled": false,
+    "method": "linear",
+    "normalize": true,
+    "po_models": [
+      "po_group",
+      "po_factor"
+    ],
+    "select_on": "val",
+    "target_metric": "ndcg@10"
+  },
+  "labels": {
+    "domain": "beauty",
+    "names": [
+      "fragrance_free",
+      "cruelty_free",
+      "sulfate_free"
+    ],
+    "unknown_as_negative": true
+  },
+  "log_level": "INFO",
+  "outcome": {
+    "mode": "scaled_rating",
+    "positive_threshold": 4.0
+  },
+  "outputs": {
+    "root_dir": "outputs/beauty_personal_care_3core_baselines"
+  },
+  "propensity": {
+    "C": 3.0,
+    "max_features": 15000,
+    "max_iter": 300,
+    "min_df": 2,
+    "n_folds": 3,
+    "trim_above": 0.95
+  },
+  "recbole_baselines": {
+    "lightgcn": {
+      "batch_size": 32768,
+      "embedding_size": 64,
+      "enabled": true,
+      "epochs": 100,
+      "eval_batch_size": 389478000,
+      "eval_step": 10,
+      "learning_rate": 0.001,
+      "n_layers": 2,
+      "reg_weight": 1e-05,
+      "stopping_step": 10
+    },
+    "sasrec": {
+      "attn_dropout_prob": 0.5,
+      "batch_size": 8192,
+      "enabled": true,
+      "epochs": 100,
+      "eval_batch_size": 512,
+      "hidden_dropout_prob": 0.5,
+      "hidden_size": 64,
+      "inner_size": 256,
+      "learning_rate": 0.001,
+      "max_seq_length": 50,
+      "n_heads": 2,
+      "n_layers": 2,
+      "stopping_step": 10
+    }
+  },
+  "seed": 42,
+  "splits": {
+    "min_train_interactions": 1,
+    "test_holdout": 1,
+    "val_holdout": 1
+  }
+}

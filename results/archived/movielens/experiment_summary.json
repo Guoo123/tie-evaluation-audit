@@ -1,0 +1,185 @@
+{
+  "ranking_results": [
+    {
+      "method": "pop_count",
+      "ndcg@10": 0.5896443820618414,
+      "hit@10": 0.7119
+    },
+    {
+      "method": "raw_count",
+      "ndcg@10": 0.23369241457053913,
+      "hit@10": 0.4364
+    },
+    {
+      "method": "centered_count",
+      "ndcg@10": 0.2345377541748175,
+      "hit@10": 0.4363
+    },
+    {
+      "method": "po_user",
+      "ndcg@10": 0.2345377541748175,
+      "hit@10": 0.4363
+    },
+    {
+      "method": "sre",
+      "ndcg@10": 0.22807085099344623,
+      "hit@10": 0.4262
+    },
+    {
+      "method": "po_group",
+      "ndcg@10": 0.22807085099344623,
+      "hit@10": 0.4262
+    },
+    {
+      "method": "ips",
+      "ndcg@10": 0.2338088162244636,
+      "hit@10": 0.4365
+    }
+  ],
+  "avg_passenger_suppression": {
+    "centered_count": 0.2233616325131958,
+    "ips": 0.440401849931168,
+    "po_group": 0.5986505122023343,
+    "po_user": 0.5109467506048149,
+    "sre": 0.5986505122023343
+  },
+  "confounding_strength": [
+    {
+      "label": "action",
+      "pop_corr": 0.09848671986588381,
+      "max_cooccur_corr": 0.20128599511939388,
+      "support": 0.10343080759048462,
+      "confounding_strength": 0.2997727149852777
+    },
+    {
+      "label": "classic",
+      "pop_corr": 0.22501425477601034,
+      "max_cooccur_corr": 0.051111684903965546,
+      "support": 0.0442240871489048,
+      "confounding_strength": 0.2761259396799759
+    },
+    {
+      "label": "visually appealing",
+      "pop_corr": 0.12701952340124495,
+      "max_cooccur_corr": 0.12141508311081523,
+      "support": 0.10350318253040314,
+      "confounding_strength": 0.24843460651206017
+    },
+    {
+      "label": "based on a book",
+      "pop_corr": 0.12473958581621707,
+      "max_cooccur_corr": 0.08272344966261379,
+      "support": 0.08569774031639099,
+      "confounding_strength": 0.20746303547883085
+    },
+    {
+      "label": "violence",
+      "pop_corr": 0.05975687190525026,
+      "max_cooccur_corr": 0.20128599511939388,
+      "support": 0.08700057864189148,
+      "confounding_strength": 0.26104286702464413
+    },
+    {
+      "label": "sci-fi",
+      "pop_corr": 0.08858616599459596,
+      "max_cooccur_corr": 0.1501363651782008,
+      "support": 0.041401274502277374,
+      "confounding_strength": 0.23872253117279676
+    }
+  ],
+  "pure_item_counts": [
+    {
+      "label": "action",
+      "n_with_label": 1429,
+      "n_pure": 712,
+      "pure_ratio": 0.4982505248425472
+    },
+    {
+      "label": "classic",
+      "n_with_label": 611,
+      "n_pure": 394,
+      "pure_ratio": 0.6448445171849427
+    },
+    {
+      "label": "visually appealing",
+      "n_with_label": 1430,
+      "n_pure": 754,
+      "pure_ratio": 0.5272727272727272
+    },
+    {
+      "label": "based on a book",
+      "n_with_label": 1184,
+      "n_pure": 736,
+      "pure_ratio": 0.6216216216216216
+    },
+    {
+      "label": "violence",
+      "n_with_label": 1202,
+      "n_pure": 644,
+      "pure_ratio": 0.5357737104825291
+    },
+    {
+      "label": "sci-fi",
+      "n_with_label": 572,
+      "n_pure": 249,
+      "pure_ratio": 0.4353146853146853
+    }
+  ],
+  "confounding_tracking": [
+    {
+      "method": "centered_count",
+      "spearman_r": 0.2571428571428572,
+      "p_value": 0.6227871720116619
+    },
+    {
+      "method": "po_user",
+      "spearman_r": -0.14285714285714288,
+      "p_value": 0.7871720116618076
+    },
+    {
+      "method": "sre",
+      "spearman_r": -0.14285714285714288,
+      "p_value": 0.7871720116618076
+    },
+    {
+      "method": "po_group",
+      "spearman_r": -0.14285714285714288,
+      "p_value": 0.7871720116618076
+    },
+    {
+      "method": "ips",
+      "spearman_r": -0.028571428571428574,
+      "p_value": 0.9571545189504373
+    }
+  ],
+  "config": {
+    "selected_tags": [
+      "action",
+      "classic",
+      "visually appealing",
+      "based on a book",
+      "violence",
+      "sci-fi"
+    ],
+    "threshold": 0.7,
+    "propensity_bins": 10,
+    "max_test_users": 10000,
+    "num_negatives": 30
+  },
+  "data_stats": {
+    "n_users": 162341,
+    "n_items": 13816,
+    "n_labels": 6,
+    "n_train": 9887006,
+    "n_test": 10000,
+    "label_names": [
+      "action",
+      "classic",
+      "visually appealing",
+      "based on a book",
+      "violence",
+      "sci-fi"
+    ]
+  },
+  "runtime_seconds": 134.4145805835724
+}

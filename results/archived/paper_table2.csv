@@ -1,0 +1,9 @@
+panel,dataset,score,stable,keyed,change
+NDCG@10,BPC,RawCount,0.8474,0.1702,-0.6772
+NDCG@10,BPC,Centered count,0.7103,0.1627,-0.5476
+NDCG@10,BPC,Residualized (low tie),0.1689,0.1685,-0.0004
+NDCG@10,MovieLens,RawCount,0.8380,0.2332,-0.6048
+NDCG@10,MovieLens,Centered count,0.8406,0.2341,-0.6065
+NDCG@10,MovieLens,Popularity,0.5905,0.5905,-0.0000218577
+Hit@10,BPC,RawCount,0.9997,0.3526,-0.6471
+Hit@10,MovieLens,RawCount,0.9390,0.4358,-0.5032

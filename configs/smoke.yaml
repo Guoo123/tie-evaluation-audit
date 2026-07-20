@@ -1,0 +1,14 @@
+artifact:
+  schema_version: 1
+  output_root: results/regenerated/smoke
+  global_seed: 42
+  candidate_count: 31
+  num_negatives: 30
+  cutoff: 10
+  batch_rows: 1000
+policies:
+  stable: stable_positive_first
+  paper_keyed: archived_float32
+  reference_keyed: hardened_uint64
+  bpc_key_seed: 20260316
+  movielens_key_seed: 20260318
