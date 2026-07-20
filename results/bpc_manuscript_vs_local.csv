@@ -1,3 +1,0 @@
-score,manuscript_stable,manuscript_keyed,manuscript_change_keyed_minus_stable,local_stable,local_hash,local_delta_stable_minus_hash,comparison_status
-RawCount,0.8474,0.1702,-0.6772,0.8474,0.1702,0.6772,"Displayed endpoints agree; delta sign conventions are opposite"
-Centered count,0.7103,0.1627,-0.5476,0.7103,0.1627,0.5477,"Displayed endpoints agree; local derivative delta contains precision not retained in its displayed endpoints and must not be recomputed or substituted"

@@ -1,0 +1,12 @@
+{
+  "label_names": [
+    "fragrance_free",
+    "cruelty_free",
+    "sulfate_free"
+  ],
+  "n_items": 389478,
+  "n_test": 2073945,
+  "n_train": 7528500,
+  "n_users": 2073945,
+  "n_val": 2073945
+}

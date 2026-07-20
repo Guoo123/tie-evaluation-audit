@@ -1,0 +1,30 @@
+{
+  "archive_role": "Paper-number evidence retained from the development ZIP supplied for artifact construction.",
+  "anonymous_review_note": "The hosted repository origin and source commit identifiers are intentionally omitted from this review package.",
+  "bpc": {
+    "available": [
+      "dataset counts",
+      "resolved configuration",
+      "aggregate tie-audit values retained in the paper writer pack"
+    ],
+    "not_available_in_supplied_zip": [
+      "historical frozen candidate rows",
+      "historical candidate-level score matrices",
+      "original tie_artifact_experiment output directory"
+    ],
+    "regeneration_status": "The new pipeline reconstructs these objects from public raw data. Archived aggregate values are comparison targets, not a substitute for a new run."
+  },
+  "movielens": {
+    "available": [
+      "exact aggregate metrics by tie mode",
+      "tie-audit summary",
+      "experiment summary and dataset counts"
+    ],
+    "not_available_in_supplied_zip": [
+      "historical frozen candidate rows",
+      "historical row-level tie diagnostics"
+    ],
+    "regeneration_status": "The new pipeline downloads MovieLens 25M, recreates rows and scores, and saves row-level diagnostics for the new run."
+  },
+  "important_score_name_clarification": "The BPC paper row 0.1689/0.1685 corresponds to the archived po_group score, which combines item-side propensity residuals with a cross-fitted user-plus-group outcome control. The simple item-side residual score was 0.2201/0.1785. The artifact names both explicitly."
+}

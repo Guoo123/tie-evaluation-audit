@@ -1,0 +1,5 @@
+score,stable_ndcg_at_10,archived_keyed_ndcg_at_10,change,stable_hit_at_10,archived_keyed_hit_at_10,any_tie_rate,boundary_tie_rate,positive_in_tie_rate
+raw_count,0.8474,0.1702,-0.6772,0.9997,0.3526,1.0000,0.9994,0.9884
+centered_count,0.7103,0.1627,-0.5476,,,1.0000,0.9994,
+item_residual_only,0.2201,0.1785,-0.0416,,,0.0520,,
+residualized_group_control,0.1689,0.1685,-0.0004,,,0.0040,,

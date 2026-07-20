@@ -1,5 +1,0 @@
-score,metric,k,manuscript_keyed,local_keyed,local_minus_manuscript,comparison_status
-RawCount,ndcg,10,0.2332,0.23369241457053913,0.00049241457053913,"Different evidence sources; this is not a rounding reconstruction"
-Centered count,ndcg,10,0.2341,0.2345377541748175,0.0004377541748175,"Different evidence sources; this is not a rounding reconstruction"
-Popularity,ndcg,10,0.5905,0.5896443820618414,-0.0008556179381586,"Different evidence sources; this is not a rounding reconstruction"
-RawCount,hit_or_recall,10,0.4358,0.4364,0.0006,"Different evidence sources; this is not a rounding reconstruction"

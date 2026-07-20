@@ -1,97 +1,219 @@
-# Tie Handling Is Part of the Evaluation Protocol
+# Anonymous artifact: order-invariance audit for tie-heavy recommendation scores
 
-Reviewer artifact for an order-invariance audit of tie-heavy recommender scores.
+This is the focused, anonymous artifact for **“Tie Handling Is Part of the Evaluation
+Protocol: An Order-Invariance Audit for Tie-Heavy Recommender Scores.”** It was
+reconstructed from the supplied development ZIP so that a reviewer can inspect the
+retained paper evidence and independently regenerate a new run from public data.
 
-This repository is deliberately small. It separates three things that are easy to blur together:
+The repository supports four distinct operations:
 
-1. an exactly reproducible evaluator mechanism on frozen or toy rows;
-2. the archived float32-key policy used for the manuscript's reported aggregates;
-3. a collision-hardened uint64 policy that satisfies the manuscript's normative row-order-invariance requirement.
+| Operation | External data? | What it establishes |
+|---|---:|---|
+| `pytest` + smoke verification | No | formulas, failure mechanism, sampler invariants, and hardened row-permutation invariance |
+| archived verification | No | paper-table arithmetic, retained dataset counts, claim-to-file provenance, and package integrity |
+| end-to-end regeneration | Yes | fresh download, preprocessing, split, scoring, resampling, tie audit, and paper outputs |
+| frozen-row replay | No, after a run | exact evaluator replay from saved candidates and candidate scores |
 
-The repository also preserves the reported aggregate results in machine-readable form. It does **not** pretend that aggregate CSVs are a substitute for the missing frozen candidate rows. The exact evidence boundary is documented in [EVIDENCE_STATUS.md](EVIDENCE_STATUS.md).
+“Regeneration” is not represented as historical row-level replay. The supplied ZIP
+did not contain the old frozen candidate rows for either dataset. The files under
+`results/archived/` therefore support aggregate claim verification. A new run creates
+and hashes the missing row-level objects so it can be replayed exactly thereafter.
+See `docs/ARCHIVED_EVIDENCE_AUDIT.md` and
+`results/archived/CLAIM_EVIDENCE.json`.
 
-## Reviewer quick start
+## Reviewer path without downloading data
 
-With Python 3.10 or newer:
+Use Python 3.11 and the pinned dependencies:
 
 ```bash
 python -m venv .venv
-. .venv/bin/activate
-python -m pip install -e ".[test]"
-python scripts/toy_audit.py
-python scripts/verify_reported_results.py
-python -m pytest -q
+source .venv/bin/activate                 # Windows: .venv\Scripts\activate
+python -m pip install -r requirements.txt
+python -m pip install --no-deps -e .
+
+python scripts/preflight.py
+python scripts/verify_manifest.py
+pytest
+python scripts/verify_artifact.py --level archive
+python scripts/check_anonymity.py
 ```
 
-On Windows PowerShell, activate with `.\.venv\Scripts\Activate.ps1` instead of the POSIX activation command.
+This checks the all-tied example, analytic expectations, no-tie equivalence,
+hardened permutation invariance, bounded-memory and full-matrix evaluator
+agreement, toy end-to-end pipelines, archived evidence, and all distributable file
+hashes.
 
-The audit commands do not access the network or an external dataset. The installation step may download NumPy, pytest, setuptools, or wheel when they are not already available in the reviewer’s environment. The audits verify the analytic all-tied example, compare stable/archived/hardened/randomized policies, check the arithmetic in the reported result tables, and run the invariance regression suite.
+## Recommended full reviewer run: MovieLens
 
-## What the artifact establishes
+MovieLens 25M is the practical end-to-end reviewer target because the official archive
+is fixed, moderate in size, and includes ratings and Tag Genome files.
 
-For one relevant item and 30 negatives with identical scores:
+```bash
+python scripts/preflight.py --dataset movielens
+python scripts/run_movielens.py --download --config configs/paper.yaml
+python scripts/replay_frozen.py --dataset movielens --config configs/paper.yaml
+python scripts/make_paper_outputs.py --config configs/paper.yaml
+python scripts/verify_artifact.py --level full --config configs/paper.yaml
+```
 
-| Tie treatment | Hit@10 | NDCG@10 |
-|---|---:|---:|
-| Stable, positive first | 1.0000 | 1.0000 |
-| Stable, positive last | 0.0000 | 0.0000 |
-| Uniform tie-order expectation | 0.3226 | 0.1466 |
+The pipeline:
 
-The candidate identities, labels, and primary scores are unchanged. Only the secondary ordering changes. This is the minimal counterexample behind the paper.
+1. downloads the official `ml-25m.zip` and adjacent checksum file, then verifies the published MD5;
+2. selects the six declared Tag Genome concepts at threshold 0.7;
+3. retains ratings at least 4.0 for Tag-Genome-covered movies;
+4. recreates the archived global chronological 80/10/10 split;
+5. selects the first 10,000 users in the test segment and one positive per user;
+6. samples 30 unique training-history-safe negatives with seed 42;
+7. freezes the positive-first candidate rows and every candidate-score matrix;
+8. evaluates stable, archived-keyed, hardened-keyed, analytic, and repeated-randomized tie treatments; and
+9. writes row-level diagnostics, environment/configuration records, and SHA-256 manifests.
 
-The empirical aggregates reported in the manuscript are available under `results/`. Their status differs by dataset:
+## Amazon Beauty & Personal Care regeneration
 
-- **BPC:** the archive contains aggregate stable/keyed values and tie diagnostics, but not the frozen candidate rows or the original tie-experiment output directory.
-- **MovieLens:** the manuscript reports a historical paired stable/keyed run. The supplied archive retains a later keyed-only snapshot whose values differ slightly and no row-level diagnostic arrays.
+The BPC run is substantially larger and is staged and resumable:
 
-Consequently, the mechanism and evaluator properties are executable here; the manuscript aggregates are inspectable and arithmetic-checked; full row-level empirical reproduction still requires restoring or regenerating the frozen rows described in [FROZEN_ROW_SCHEMA.md](FROZEN_ROW_SCHEMA.md).
+```bash
+python scripts/preflight.py --dataset bpc
+python scripts/download_data.py --dataset bpc
+python scripts/run_bpc.py --stage stage_raw
+python scripts/run_bpc.py --stage preprocess
+python scripts/run_bpc.py --stage model
+python scripts/run_bpc.py --stage evaluate
+python scripts/replay_frozen.py --dataset bpc
+python scripts/make_paper_outputs.py
+python scripts/verify_artifact.py --level full
+```
+
+The equivalent one-command data-to-results run is:
+
+```bash
+python scripts/run_bpc.py --download --stage all
+```
+
+A reviewer with limited resources can omit the expensive low-tie group control:
+
+```bash
+python scripts/run_bpc.py --stage all --skip-low-tie-control
+```
+
+Or, after preprocessing/model construction, test only the evaluator on a prefix:
+
+```bash
+python scripts/run_bpc.py --stage evaluate --max-rows 10000 --skip-low-tie-control
+```
+
+Subset metrics are labeled as such and are never compared with the paper-scale table.
+
+## Exact score definitions
+
+### BPC historical `raw_count`
+
+The development identifier is retained for compatibility, but the operational
+quantity is rating weighted:
+
+```text
+y[r] = clip((rating[r] - 1) / 4, 0, 1)
+S_raw[u,l] = sum_{training rows r of user u} y[r] * A[item[r],l]
+score_raw(u,i) = S_raw[u] dot A[i]
+```
+
+It should be described as a **rating-weighted historical attribute total**, not as a
+literal unweighted event count.
+
+### BPC low-tie control
+
+The paper row `0.1689 -> 0.1685` corresponds to the development score `po_group`,
+renamed here as `residualized_group_control`. It combines item-side attribute
+residuals from three-fold masked-text propensity models with a cross-fitted
+user-plus-item-group outcome control. The simpler item-residual-only score is retained
+separately as `item_residual_only`; it is not the source of the reported low-tie row.
+
+### MovieLens RawCount
+
+MovieLens uses unweighted training-history counts of six thresholded Tag Genome
+attributes, followed by a user-count/item-attribute dot product.
+
+Full equations and implementation locations are in `docs/PAPER_TO_CODE.md`.
 
 ## Tie policies
 
-`stable`
-: Descending primary score with input position preserved inside exact ties. This is intentionally order-dependent and serves as the failure-mode baseline.
+| Policy | Meaning | Row-order invariant? | Submitted table? |
+|---|---|---:|---:|
+| `stable_positive_first` | stable descending primary-score sort; input order resolves ties | No | Stable column |
+| `archived_float32` | historical 64-bit mixer converted to float32 before sorting | Not guaranteed under rare float32 collisions | Keyed column |
+| `hardened_uint64` | `(-score, uint64_key, item_id)` | Yes | Added reference |
+| `analytic_uniform_tie_expectation` | exact expected metric over positive positions in its tie block | Yes, as an expectation | Added reference |
+| `randomized` | repeated independent continuous secondary keys | In expectation | Added sensitivity analysis |
 
-`archived_float32`
-: Reproduces the manuscript-described and retained BPC implementation: mix `(seed, user_id, item_id)` in wrapping uint64 arithmetic, divide by `2^64`, cast to float32, sort by the secondary key, then stably by descending primary score. It normally removes position bias, but float32 collisions can reintroduce input-layout dependence. The retained MovieLens script uses `lexsort`; the forms agree when secondary keys are unique but need not share collision behavior.
+The archived policy is retained only for submitted-number compatibility. The hardened
+policy is the strict implementation of row-order invariance.
 
-`hardened_uint64`
-: Retains the full uint64 mixed key and uses item identity as a final fallback. This is the recommended position-independent operational policy.
+## Output and replay contract
 
-`randomized`
-: Draws independent secondary keys and orders exact ties without perturbing primary scores. Repeating this policy estimates the uniform tie-order expectation.
+A completed dataset run writes:
 
-The deterministic keyed result is one reproducible realization inside each tie block. It is not the expectation over all admissible tie orders.
+```text
+results/regenerated/<dataset>/
+  resolved_config.json
+  runtime_manifest.json
+  frozen_candidate_rows.npz
+  candidate_scores_<score>.npy
+  metrics_by_policy.csv
+  diagnostics.json
+  randomized_<score>.csv
+  run_summary.json
+  run_integrity_manifest.json
+  replay/
+    metrics_by_policy.csv
+    diagnostics.json
+    replay_manifest.json
+```
+
+`run_integrity_manifest.json` hashes the retained run outputs and upstream manifests.
+`replay_manifest.json` hashes the frozen replay inputs and requires replayed metrics
+to match the recorded run metrics. See `docs/RUN_OUTPUT_SCHEMA.md`.
 
 ## Repository map
 
 ```text
-configs/                    Reconstructed protocol records and explicit unknowns
-results/                    Paper-reported aggregates and locally retained snapshots
-scripts/toy_audit.py        Network-free executable demonstration
-scripts/audit_frozen_rows.py Generic audit for a frozen-row NPZ
-scripts/verify_reported_results.py
-scripts/check_anonymity.py
-scripts/build_manifest.py
-src/tie_audit/              Archived and hardened evaluator implementations
-tests/                      Analytic, invariance, collision, and regression tests
+configs/paper.yaml                    paper parameters, seeds, targets, tolerances
+src/tie_eval/                         data, scoring, ranking, metrics, diagnostics
+scripts/download_data.py              official-source downloads and checksums
+scripts/run_movielens.py               full MovieLens regeneration
+scripts/run_bpc.py                     staged BPC regeneration
+scripts/replay_frozen.py               evaluator-only replay from saved rows/scores
+scripts/make_paper_outputs.py          Table 2 and Figure 1 data products
+scripts/verify_artifact.py             smoke, archive, and full verification
+scripts/preflight.py                   environment, disk, RAM, and data readiness
+results/archived/                      retained aggregate evidence and provenance
+results/regenerated/                   locally generated outputs; not distributed
+examples/toy/                          data-free mechanism example
+tests/                                 unit and toy end-to-end tests
+docs/                                  reviewer, data, evidence, and limitation notes
 ```
 
-For the fastest review path, read [REVIEWER_GUIDE.md](REVIEWER_GUIDE.md). For reconstruction levels and data boundaries, see [REPRODUCING.md](REPRODUCING.md).
+## Resource guidance
 
-The exact verification environment and passed gates are recorded in [TESTED_ENVIRONMENT.md](TESTED_ENVIRONMENT.md).
+| Run | RAM | Free disk | Typical CPU time |
+|---|---:|---:|---:|
+| tests and archived verification | <2 GB | <1 GB | under a few minutes |
+| MovieLens full regeneration | 12–24 GB | 5–10 GB | roughly 10–40 minutes |
+| BPC raw/centered paper-scale audit | 32–64 GB | 40–80 GB | several hours |
+| BPC with cross-fitted group control | 64–96 GB recommended | 60–100 GB | several hours to more than one day |
 
-## Scope and non-claims
+Runtime depends on storage and CPU throughput. BPC downloads, staged Parquet files,
+processed splits, propensity outputs, control predictions, and score artifacts are
+reused unless `--force` is supplied.
 
-- The audit is conditional on the declared candidate universe. It does not claim that sampled and full-catalog evaluation are equivalent.
-- A keyed total order provides reproducibility, not marginalization over ties.
-- The two empirical domains demonstrate a failure condition; they do not estimate its prevalence across all recommender systems.
-- No raw Amazon or MovieLens data are redistributed here.
-- Apart from the repository's MIT license and hosting metadata, the research artifact contains no author affiliations, personal URLs, original development history, or development logs.
+## Validation boundary of this distributed ZIP
 
-The archived BPC sampler could emit duplicate negatives or short rows after an attempt cap. The historical counts are unavailable because the frozen rows were not retained. The hardened NPZ contract rejects duplicate candidate identities; that is an improved audit requirement, not a claim of byte-equivalence with every historical row.
+The artifact-construction environment validated the code with unit tests and toy
+end-to-end runs, verified the retained aggregate evidence, rebuilt the paper table and
+figure from archived evidence, checked anonymity, and verified the package checksum
+manifest. It did not complete the public-data MovieLens or BPC numerical regeneration
+because external dataset downloads were unavailable in that environment. The package
+therefore does not claim an unobserved full-data run; the exact commands and expected
+checks are provided for reviewer execution.
 
-## Venue alignment
-
-The paper is an evaluation-methodology contribution and aligns most directly with FRAME 2026's **Experimental Methodologies** track: protocol design, methodological critique, and recommendations for comparable empirical work. That track is single-blind and allows complete results; the eight-page manuscript body plus references matches its stated `8 pages + references` limit. See the official [FRAME call for contributions](https://remaplab.github.io/frame2026/cfp/) for the governing rules.
-
-The generic RecSys call for proposals to *organize* a workshop is not the governing call for this paper.
+Start with `docs/REVIEWER_GUIDE.md`. The most important evidence caveats are in
+`docs/KNOWN_LIMITATIONS.md`.

@@ -1,0 +1,6 @@
+cff-version: 1.2.0
+message: "During anonymous review, cite the accompanying paper rather than this repository."
+title: "Tie Handling Is Part of the Evaluation Protocol: Anonymous Reproducibility Artifact"
+type: software
+version: 1.0.0
+date-released: 2026-07-19
