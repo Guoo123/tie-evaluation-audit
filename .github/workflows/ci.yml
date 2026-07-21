@@ -25,7 +25,7 @@ jobs:
         run: pytest
       - name: Archived evidence and mechanism verification
         run: python scripts/verify_artifact.py --level archive
-      - name: Anonymous package check
-        run: python scripts/check_anonymity.py
+      - name: Package hygiene check
+        run: python scripts/check_package_hygiene.py
       - name: Package checksum manifest
         run: python scripts/verify_manifest.py

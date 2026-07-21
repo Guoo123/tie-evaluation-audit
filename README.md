@@ -1,9 +1,11 @@
-# Anonymous artifact: order-invariance audit for tie-heavy recommendation scores
+# Artifact: order-invariance audit for tie-heavy recommendation scores
 
-This is the focused, anonymous artifact for **“Tie Handling Is Part of the Evaluation
+This is the focused reproducibility artifact for **“Tie Handling Is Part of the Evaluation
 Protocol: An Order-Invariance Audit for Tie-Heavy Recommender Scores.”** It was
 reconstructed from the supplied development ZIP so that a reviewer can inspect the
 retained paper evidence and independently regenerate a new run from public data.
+FRAME Track 2 uses single-blind review, so this release includes author and citation
+metadata rather than presenting itself as an anonymous package.
 
 The repository supports four distinct operations:
 
@@ -23,25 +25,44 @@ See `docs/ARCHIVED_EVIDENCE_AUDIT.md` and
 
 ## Reviewer path without downloading data
 
-Use Python 3.11 and the pinned dependencies:
+### Fast compatibility path
+
+For mechanism and archive checks on Python 3.11--3.13, install the compatible ranges
+from `pyproject.toml`:
 
 ```bash
 python -m venv .venv
 source .venv/bin/activate                 # Windows: .venv\Scripts\activate
-python -m pip install -r requirements.txt
-python -m pip install --no-deps -e .
+python -m pip install -U pip
+python -m pip install -e ".[dev]"
 
 python scripts/preflight.py
 python scripts/verify_manifest.py
 pytest
 python scripts/verify_artifact.py --level archive
-python scripts/check_anonymity.py
+python scripts/check_package_hygiene.py
 ```
 
-This checks the all-tied example, analytic expectations, no-tie equivalence,
-hardened permutation invariance, bounded-memory and full-matrix evaluator
-agreement, toy end-to-end pipelines, archived evidence, and all distributable file
-hashes.
+`preflight.py` separately reports whether the exact frozen paper environment is in
+use. It may label a newer compatible environment as non-frozen even when the tests
+pass. `verify_artifact.py` prints its JSON report to the terminal and leaves the
+checkout unchanged. To retain a report explicitly, add an output path, for example
+`--output results/regenerated/verification_report.json`.
+
+### Exact frozen environment
+
+For paper-scale numerical regeneration, use Python 3.11 with the exact versions in
+`requirements.txt`, `environment.yml`, or the supplied Dockerfile:
+
+```bash
+python -m pip install -r requirements.txt
+python -m pip install --no-deps -e .
+```
+
+These checks cover the all-tied example, analytic expectations, no-tie equivalence,
+hardened permutation invariance, bounded-memory and full-matrix evaluator agreement,
+toy end-to-end pipelines, archived evidence, package hygiene, and all distributable
+file hashes.
 
 ## Recommended full reviewer run: MovieLens
 
@@ -209,7 +230,7 @@ reused unless `--force` is supplied.
 
 The artifact-construction environment validated the code with unit tests and toy
 end-to-end runs, verified the retained aggregate evidence, rebuilt the paper table and
-figure from archived evidence, checked anonymity, and verified the package checksum
+figure from archived evidence, checked package hygiene, and verified the package checksum
 manifest. It did not complete the public-data MovieLens or BPC numerical regeneration
 because external dataset downloads were unavailable in that environment. The package
 therefore does not claim an unobserved full-data run; the exact commands and expected

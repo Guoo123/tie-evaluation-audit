@@ -22,7 +22,7 @@ manifest-verify:
 	python scripts/verify_manifest.py
 
 package-check: manifest-verify test archive-verify
-	python scripts/check_anonymity.py
+	python scripts/check_package_hygiene.py
 
 download-movielens:
 	python scripts/download_data.py --dataset movielens

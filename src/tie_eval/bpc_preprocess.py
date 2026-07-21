@@ -4,7 +4,7 @@ import gzip
 import json
 import logging
 from pathlib import Path
-from typing import Any, Iterator
+from typing import Any
 
 import duckdb
 import numpy as np

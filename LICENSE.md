@@ -1,6 +1,6 @@
 # Artifact and data-use notice
 
-The source code in this anonymous review artifact is provided for scholarly review and
+The source code in this research artifact is provided for scholarly review and
 reproducibility assessment. The authors retain copyright until a publication license is
 selected. Reviewers may inspect, execute, and modify the code for evaluation purposes.
 

@@ -26,7 +26,7 @@ The focused package omits unrelated recommender baselines, LightGCN/SASRec train
 MIND and semi-synthetic studies, logs, plots unrelated to the submitted manuscript,
 TensorBoard files, local machine paths, development planning notes, and source-control
 metadata. Those objects do not help a reviewer test the tie-handling claim and would
-make anonymous inspection harder.
+make focused reviewer inspection harder.
 
 ## Changes that intentionally improve, rather than reproduce, the old packaging
 
