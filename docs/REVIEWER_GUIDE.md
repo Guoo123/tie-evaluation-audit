@@ -4,15 +4,18 @@
 
 ```bash
 python scripts/verify_manifest.py
-python scripts/check_anonymity.py
+python scripts/check_package_hygiene.py
 python scripts/preflight.py
 ```
 
 The first command verifies every distributable file against
-`ARTIFACT_MANIFEST.sha256`. The second checks that the package does not contain the
-manuscript, contact information, personal paths, hosted-account URLs, or retained
-source-repository commit identifiers. Preflight reports Python/package compatibility,
-free disk, and whether each public dataset is already present.
+`ARTIFACT_MANIFEST.sha256`. The second rejects operating-system metadata (including
+AppleDouble `._*` files), symbolic links, unexpected generated/downloaded files,
+unmanifested distributable files, user-specific home paths, and stale anonymous-review
+wording while confirming that the public citation metadata is present. Author names,
+emails, and the hosted repository URL are intentionally retained for FRAME Track 2
+single-blind review. Preflight reports Python/package compatibility, free disk, and
+whether each public dataset is already present.
 
 ## 2. Verify the mechanism without external data
 
@@ -37,6 +40,9 @@ The checks require all of the following:
 ```bash
 python scripts/verify_artifact.py --level archive
 ```
+
+The verifier prints JSON to the terminal without modifying the checkout. Add
+`--output PATH` only when a saved verification report is wanted.
 
 Start with:
 

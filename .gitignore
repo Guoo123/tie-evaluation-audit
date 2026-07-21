@@ -17,3 +17,7 @@ results/regenerated/*
 !results/regenerated/.gitkeep
 *.log
 .DS_Store
+Thumbs.db
+desktop.ini
+__MACOSX/
+._*

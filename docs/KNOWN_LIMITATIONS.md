@@ -69,7 +69,7 @@ rating-weighted historical attribute total.
 ## Full public-data execution was not performed while constructing this ZIP
 
 The package was validated with unit tests, toy end-to-end data, archived-evidence
-checks, paper-output reconstruction, anonymity checks, and package hashes. External
+checks, paper-output reconstruction, package-hygiene checks, and package hashes. External
 dataset downloads were unavailable in the construction environment, so this ZIP does
 not claim that a fresh full MovieLens or BPC run was observed here. Full verification
 is intentionally executable by the reviewer and fails unless at least one full-scale

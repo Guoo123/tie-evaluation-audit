@@ -3,7 +3,7 @@
 The supplied development ZIP was a much broader research repository. It contained
 many experiments unrelated to the submitted tie-handling paper, large logs, hardcoded
 machine paths, and partial result bundles. Copying it wholesale would have made the
-artifact harder to audit and less anonymous. This focused repository was therefore
+artifact harder to audit and more likely to expose irrelevant local metadata. This focused repository was therefore
 constructed from the paper-relevant implementation and evidence.
 
 ## Components retained or translated
@@ -34,7 +34,7 @@ constructed from the paper-relevant implementation and evidence.
    policy and paired with a uint64-plus-item-ID reference.
 6. **Tiny floating-point jitter for random ties** was replaced by independent
    secondary keys sorted lexicographically under the unchanged primary score.
-7. **Unfocused repository contents and identity leaks** were excluded.
+7. **Unfocused repository contents and local-machine metadata** were excluded.
 8. **Paper/code naming ambiguity for the low-tie score** was documented and split
    into two explicit score names.
 9. **Download and environment provenance** was added.

@@ -617,12 +617,24 @@ def main() -> None:
     parser = argparse.ArgumentParser(description="Verify the tie-evaluation artifact.")
     parser.add_argument("--config", default=str(repo_root / "configs/paper.yaml"))
     parser.add_argument("--level", choices=["smoke", "archive", "full"], default="smoke")
+    parser.add_argument(
+        "--output",
+        default=None,
+        help=(
+            "Optional path for the JSON verification report. When omitted, the report "
+            "is printed without modifying the checkout."
+        ),
+    )
     args = parser.parse_args()
     config = load_config(args.config)
     report = run_verification(config, args.level)
-    destination = repo_path(config, config["artifact"]["output_root"]) / "verification_report.json"
-    destination.parent.mkdir(parents=True, exist_ok=True)
-    destination.write_text(json.dumps(report, indent=2) + "\n", encoding="utf-8")
+    if args.output is not None:
+        destination = Path(args.output).expanduser()
+        if not destination.is_absolute():
+            destination = repo_root / destination
+        destination = destination.resolve()
+        destination.parent.mkdir(parents=True, exist_ok=True)
+        destination.write_text(json.dumps(report, indent=2) + "\n", encoding="utf-8")
     print(json.dumps(report, indent=2))
 
 
