@@ -32,7 +32,9 @@ from `pyproject.toml`:
 
 ```bash
 python -m venv .venv
-source .venv/bin/activate                 # Windows: .venv\Scripts\activate
+source .venv/bin/activate                 # macOS/Linux
+# PowerShell: .\.venv\Scripts\Activate.ps1
+# cmd.exe: .venv\Scripts\activate.bat
 python -m pip install -U pip
 python -m pip install -e ".[dev]"
 
