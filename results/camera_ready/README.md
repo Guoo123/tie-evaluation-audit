@@ -28,5 +28,7 @@ SHA-256: 4b1e0b69e5d2adad9a0601ce28d79e5ae7c393e600f5ae0f7ebf4b924716ee18
 ```
 
 For MovieLens, the camera-ready paper reports the aggregate values unchanged from the
-accepted version. The canonical paired source file and corresponding row-level arrays
-were not retained; no camera-ready row-level MovieLens replay is claimed.
+accepted version. The canonical paired aggregate source is retained at
+`results/archived/movielens/tie_audit_summary.csv`, but the corresponding row-level
+candidate and score arrays were not retained; no camera-ready row-level MovieLens
+replay is claimed.
