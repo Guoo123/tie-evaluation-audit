@@ -8,9 +8,10 @@ deterministic reconstruction of 30,000 rows and six score matrices; all 84 check
 aggregate values match the original run exactly. These arrays are labeled as
 reconstructed, not as files frozen during the original run.
 
-For MovieLens, the canonical paired source file and row-level arrays were not
-recovered. The camera-ready paper therefore reports the accepted aggregate values
-unchanged and makes no claim of exact row-level MovieLens replay. See
+For MovieLens, the canonical paired aggregate source is retained at
+`results/archived/movielens/tie_audit_summary.csv`; the row-level candidate and score
+arrays were not recovered. The camera-ready paper therefore reports the accepted
+aggregate values unchanged and makes no claim of exact row-level MovieLens replay. See
 `docs/CAMERA_READY_PROVENANCE.md`.
 
 ## Amazon category files lack an adjacent published checksum
