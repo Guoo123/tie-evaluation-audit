@@ -23,9 +23,10 @@ The frozen arrays and per-seed outputs are distributed as the companion GitHub R
 asset described in `results/camera_ready/README.md`.
 
 For MovieLens, the camera-ready paper reports the aggregate values unchanged from the
-accepted version. The canonical paired source file and corresponding row-level arrays
-were not retained, so no camera-ready row-level MovieLens replay is claimed. See
-`docs/CAMERA_READY_PROVENANCE.md`.
+accepted version. The canonical paired aggregate source is retained at
+`results/archived/movielens/tie_audit_summary.csv`, but the corresponding row-level
+candidate and score arrays were not retained, so no camera-ready row-level MovieLens
+replay is claimed. See `docs/CAMERA_READY_PROVENANCE.md`.
 
 ## What the repository can verify
 
@@ -106,7 +107,8 @@ training-history-safe negatives per selected user, freezes the candidate rows an
 score matrices, and evaluates all tie policies.
 
 A new MovieLens run is prospective regeneration. It does not replace the accepted
-aggregate values or recover the missing canonical paired source file.
+aggregate values or recover the missing historical row-level candidate and score
+arrays.
 
 ### Amazon Beauty & Personal Care
 
