@@ -4,7 +4,7 @@ build-backend = "setuptools.build_meta"
 
 [project]
 name = "tie-evaluation-audit"
-version = "1.0.1"
+version = "1.1.0"
 description = "Reproducibility artifact for an order-invariance audit of tie-heavy recommender evaluation"
 readme = "README.md"
 requires-python = ">=3.11,<3.14"

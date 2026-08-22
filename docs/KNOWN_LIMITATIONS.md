@@ -1,14 +1,17 @@
 # Known limitations and evidence gaps
 
-## Historical rows were not present in the supplied development ZIP
+## Original frozen rows were not present in the supplied development ZIP
 
-The archive contained aggregate BPC tie-audit numbers and exact MovieLens aggregate
-CSV files, but not the historical candidate rows or candidate-score matrices. The new
-repository can regenerate rows from public data; it cannot prove byte-for-byte
-identity with objects that were never preserved.
+The submission archive did not contain historical candidate rows or candidate-score
+matrices for either dataset. For Amazon, preserved historical inputs later allowed a
+deterministic reconstruction of 30,000 rows and six score matrices; all 84 checked
+aggregate values match the original run exactly. These arrays are labeled as
+reconstructed, not as files frozen during the original run.
 
-This limitation is stated in `results/archived/PROVENANCE.json` and is not hidden by
-the verification tooling.
+For MovieLens, the canonical paired source file and row-level arrays were not
+recovered. The camera-ready paper therefore reports the accepted aggregate values
+unchanged and makes no claim of exact row-level MovieLens replay. See
+`docs/CAMERA_READY_PROVENANCE.md`.
 
 ## Amazon category files lack an adjacent published checksum
 
@@ -43,12 +46,11 @@ The submitted MovieLens script used a global 80/10/10 timestamp split, not a per
 last-item split. The artifact reproduces that choice for result compatibility and
 documents it explicitly. It should not be generalized as the only appropriate split.
 
-## Paper wording for the BPC low-tie control needs precision
+## The Amazon low-tie diagnostic must be identified precisely
 
-The submitted numeric row corresponds to a score that combines item-side residuals
-with cross-fitted user/group outcome residualization. Item-side residualization alone
-produced a different archived value. The code and documentation distinguish them;
-the manuscript should do the same.
+The reported `0.1689 -> 0.1685` row combines item-side residuals with cross-fitted
+user/group outcome residualization. Item-side residualization alone is a different
+score. The camera-ready manuscript and artifact now distinguish them explicitly.
 
 ## The retained MovieLens summary contains a nearby but different hash-mode run
 
@@ -66,11 +68,12 @@ The BPC implementation multiplies each historical item attribute vector by
 `raw_count` is retained, but an exact manuscript description should call it a
 rating-weighted historical attribute total.
 
-## Full public-data execution was not performed while constructing this ZIP
+## Public-data regeneration remains prospective in this source repository
 
-The package was validated with unit tests, toy end-to-end data, archived-evidence
-checks, paper-output reconstruction, package-hygiene checks, and package hashes. External
-dataset downloads were unavailable in the construction environment, so this ZIP does
-not claim that a fresh full MovieLens or BPC run was observed here. Full verification
-is intentionally executable by the reviewer and fails unless at least one full-scale
-regenerated dataset is present.
+The source repository is validated with unit tests, toy end-to-end data,
+archived-evidence checks, camera-ready table reconstruction, package-hygiene checks,
+and package hashes. The separate Amazon camera-ready release payload also passed an
+evaluator-only replay on the reconstructed 30,000-row arrays. A fresh public-data
+MovieLens or Amazon run remains prospective and is not conflated with the accepted
+aggregate evidence. Full verification fails unless at least one full-scale regenerated
+dataset is present.

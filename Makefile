@@ -1,6 +1,6 @@
 .PHONY: setup preflight test smoke archive-verify manifest-verify package-check \
         download-movielens run-movielens replay-movielens \
-        download-bpc run-bpc replay-bpc run-all verify figure clean-generated
+        download-bpc run-bpc replay-bpc run-all verify paper-outputs figure clean-generated
 
 setup:
 	python -m pip install -r requirements.txt
@@ -48,8 +48,11 @@ run-all:
 verify:
 	python scripts/verify_artifact.py --level full --config configs/paper.yaml
 
-figure:
-	python scripts/make_paper_outputs.py --config configs/paper.yaml
+paper-outputs:
+	python scripts/make_paper_outputs.py --config configs/camera_ready.yaml
+
+# Backward-compatible alias; the camera-ready paper no longer includes Figure 1.
+figure: paper-outputs
 
 clean-generated:
 	rm -rf results/regenerated/* data/raw/* data/interim/* data/processed/*
