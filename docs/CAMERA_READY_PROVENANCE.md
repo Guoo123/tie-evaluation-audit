@@ -9,12 +9,13 @@ additional evaluator-only evidence reported in the camera-ready paper.
 submission. The stable/input-order and historical float32-key values in the
 cross-domain table are unchanged.
 
-For MovieLens, the camera-ready manuscript reports those accepted aggregate values
-unchanged. A targeted search of the original VM did not recover the canonical paired
-source file or row-level candidate and score arrays. A nearby retained Tag Genome run
-contains different values and is not substituted for the accepted source. The
-repository therefore makes no claim of exact row-level replay for the accepted
-MovieLens comparison.
+For MovieLens, the canonical paired aggregate source is
+`results/archived/movielens/tie_audit_summary.csv`; it contains the accepted stable and
+historical float32-key values used in the cross-domain table. A targeted search of the
+original VM did not recover the corresponding row-level candidate and score arrays. A
+nearby retained Tag Genome run contains different values and is not substituted for
+the accepted source. The repository therefore makes no claim of exact row-level replay
+for the accepted MovieLens comparison.
 
 ## 2. Deterministically reconstructed Amazon evidence
 
