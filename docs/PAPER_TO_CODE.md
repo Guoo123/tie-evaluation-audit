@@ -14,7 +14,7 @@
 | BPC centered count | same | same function | `centered_count` metrics |
 | BPC low-tie control | propensity + group-control config | `fit_propensities`, `fit_group_control_oof`, `build_score_matrices` | `residualized_group_control` metrics |
 | MovieLens Tag Genome | `movielens.preprocessing` | `src/tie_eval/movielens.py` | MovieLens metrics and diagnostics |
-| Table 2 / Figure 1 | archived or regenerated metrics | `scripts/make_paper_outputs.py` | `results/regenerated/paper_outputs/` |
+| Camera-ready Tables 2 and 3 | accepted aggregates plus Amazon camera-ready summaries | `scripts/make_paper_outputs.py` | `table2_cross_domain.csv`, `table3_amazon_policies.csv` |
 
 ## BPC low-tie score: exact implementation identity
 
@@ -90,3 +90,13 @@ one ambiguous verbal definition for both domains.
 | `runtime_manifest.json` | same | Python/package/platform/config hash |
 | `run_integrity_manifest.json` | same | SHA-256 of retained run inputs and outputs |
 | `replay_manifest.json` | `src/tie_eval/replay.py` | frozen-row input hashes and replay equality result |
+
+
+## Camera-ready evidence boundary
+
+`configs/paper.yaml` preserves the accepted-submission settings.
+`configs/camera_ready.yaml` records the 100-seed analysis and corrected 0.39%
+residualized-score tie rate. Compact final-table inputs live in
+`results/camera_ready/amazon/`; the binary reconstructed rows and candidate-score
+matrices are distributed through the companion release asset. See
+`docs/CAMERA_READY_PROVENANCE.md`.

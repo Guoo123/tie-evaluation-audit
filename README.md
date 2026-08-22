@@ -1,34 +1,52 @@
 # Artifact: order-invariance audit for tie-heavy recommendation scores
 
-This is the focused reproducibility artifact for **“Tie Handling Is Part of the Evaluation
-Protocol: An Order-Invariance Audit for Tie-Heavy Recommender Scores.”** It was
-reconstructed from the supplied development ZIP so that a reviewer can inspect the
-retained paper evidence and independently regenerate a new run from public data.
-FRAME Track 2 uses single-blind review, so this release includes author and citation
-metadata rather than presenting itself as an anonymous package.
+This repository is the reproducibility artifact for **“Tie Handling Is Part of the
+Evaluation Protocol: An Order-Invariance Audit for Tie-Heavy Recommender Scores.”**
+It supports mechanism tests, aggregate-evidence verification, public-data
+regeneration, and evaluator-only replay from frozen candidate rows and scores.
 
-The repository supports four distinct operations:
+## Camera-ready update
+
+The accepted paper compared input-order tie-breaking with a deterministic secondary
+key. The camera-ready version keeps those aggregate results unchanged and adds three
+Amazon evaluator-only analyses on the same 30,000 rows and candidate scores:
+
+- a hardened unsigned-64-bit hash tie-break with item ID as the final fallback;
+- the exact metric expectation under uniform random tie-breaking; and
+- 100 independent hash seeds, reported with mean and variation.
+
+Preserved historical inputs deterministically reconstruct 30,000 Amazon Beauty &
+Personal Care rows with 31 candidates per row and six score matrices. The
+reconstruction reproduces all 84 checked aggregate values from the original run
+exactly. Compact summaries are committed under `results/camera_ready/amazon/`.
+The frozen arrays and per-seed outputs are distributed as the companion GitHub Release
+asset described in `results/camera_ready/README.md`.
+
+For MovieLens, the camera-ready paper reports the aggregate values unchanged from the
+accepted version. The canonical paired aggregate source is retained at
+`results/archived/movielens/tie_audit_summary.csv`, but the corresponding row-level
+candidate and score arrays were not retained, so no camera-ready row-level MovieLens
+replay is claimed. See `docs/CAMERA_READY_PROVENANCE.md`.
+
+## What the repository can verify
 
 | Operation | External data? | What it establishes |
 |---|---:|---|
 | `pytest` + smoke verification | No | formulas, failure mechanism, sampler invariants, and hardened row-permutation invariance |
-| archived verification | No | paper-table arithmetic, retained dataset counts, claim-to-file provenance, and package integrity |
+| archived verification | No | accepted-table arithmetic, retained dataset counts, claim-to-file provenance, and package integrity |
+| camera-ready summary verification | No | the Amazon four-policy table, 100-seed summaries, tie diagnostics, collision audit, and exact 84-value reconstruction check |
 | end-to-end regeneration | Yes | fresh download, preprocessing, split, scoring, resampling, tie audit, and paper outputs |
-| frozen-row replay | No, after a run | exact evaluator replay from saved candidates and candidate scores |
+| frozen-row replay | No, after a run or with the release asset | evaluator replay from fixed candidates and candidate scores |
 
-“Regeneration” is not represented as historical row-level replay. The supplied ZIP
-did not contain the old frozen candidate rows for either dataset. The files under
-`results/archived/` therefore support aggregate claim verification. A new run creates
-and hashes the missing row-level objects so it can be replayed exactly thereafter.
-See `docs/ARCHIVED_EVIDENCE_AUDIT.md` and
-`results/archived/CLAIM_EVIDENCE.json`.
+“Regeneration” is not represented as historical row-level replay. The original
+submission ZIP did not contain frozen candidate rows for either dataset. The Amazon
+camera-ready rows were later reconstructed deterministically from preserved historical
+inputs and verified against the original aggregate outputs. The MovieLens evidence
+remains aggregate-only.
 
-## Reviewer path without downloading data
+## Fast verification without downloading data
 
-### Fast compatibility path
-
-For mechanism and archive checks on Python 3.11--3.13, install the compatible ranges
-from `pyproject.toml`:
+For Python 3.11–3.13:
 
 ```bash
 python -m venv .venv
@@ -43,57 +61,59 @@ python scripts/verify_manifest.py
 pytest
 python scripts/verify_artifact.py --level archive
 python scripts/check_package_hygiene.py
+python scripts/make_paper_outputs.py --config configs/camera_ready.yaml
 ```
 
-`preflight.py` separately reports whether the exact frozen paper environment is in
-use. It may label a newer compatible environment as non-frozen even when the tests
-pass. `verify_artifact.py` prints its JSON report to the terminal and leaves the
-checkout unchanged. To retain a report explicitly, add an output path, for example
-`--output results/regenerated/verification_report.json`.
+The paper-output command writes:
 
-### Exact frozen environment
+```text
+results/regenerated/paper_outputs/
+  table2_cross_domain.csv
+  table3_amazon_policies.csv
+  manifest.json
+```
+
+It no longer generates the redundant figure removed from the camera-ready paper.
+
+## Exact frozen environment
 
 For paper-scale numerical regeneration, use Python 3.11 with the exact versions in
-`requirements.txt`, `environment.yml`, or the supplied Dockerfile:
+`requirements.txt`, `environment.yml`, or the Dockerfile:
 
 ```bash
 python -m pip install -r requirements.txt
 python -m pip install --no-deps -e .
 ```
 
-These checks cover the all-tied example, analytic expectations, no-tie equivalence,
-hardened permutation invariance, bounded-memory and full-matrix evaluator agreement,
-toy end-to-end pipelines, archived evidence, package hygiene, and all distributable
-file hashes.
+Use `configs/paper.yaml` to preserve the accepted-submission settings, including the
+original 20-run randomized check. Use `configs/camera_ready.yaml` for the final
+100-seed analysis and the corrected 0.39% Amazon residualized-score tie rate.
 
-## Recommended full reviewer run: MovieLens
+## Public-data regeneration
 
-MovieLens 25M is the practical end-to-end reviewer target because the official archive
-is fixed, moderate in size, and includes ratings and Tag Genome files.
+### MovieLens 25M + Tag Genome
 
 ```bash
 python scripts/preflight.py --dataset movielens
 python scripts/run_movielens.py --download --config configs/paper.yaml
 python scripts/replay_frozen.py --dataset movielens --config configs/paper.yaml
-python scripts/make_paper_outputs.py --config configs/paper.yaml
+python scripts/make_paper_outputs.py --config configs/camera_ready.yaml
 python scripts/verify_artifact.py --level full --config configs/paper.yaml
 ```
 
-The pipeline:
+The pipeline downloads the fixed MovieLens 25M archive, selects the six declared Tag
+Genome concepts, recreates the archived global chronological split, samples 30 unique
+training-history-safe negatives per selected user, freezes the candidate rows and
+score matrices, and evaluates all tie policies.
 
-1. downloads the official `ml-25m.zip` and adjacent checksum file, then verifies the published MD5;
-2. selects the six declared Tag Genome concepts at threshold 0.7;
-3. retains ratings at least 4.0 for Tag-Genome-covered movies;
-4. recreates the archived global chronological 80/10/10 split;
-5. selects the first 10,000 users in the test segment and one positive per user;
-6. samples 30 unique training-history-safe negatives with seed 42;
-7. freezes the positive-first candidate rows and every candidate-score matrix;
-8. evaluates stable, archived-keyed, hardened-keyed, analytic, and repeated-randomized tie treatments; and
-9. writes row-level diagnostics, environment/configuration records, and SHA-256 manifests.
+A new MovieLens run is prospective regeneration. It does not replace the accepted
+aggregate values or recover the missing historical row-level candidate and score
+arrays.
 
-## Amazon Beauty & Personal Care regeneration
+### Amazon Beauty & Personal Care
 
-The BPC run is substantially larger and is staged and resumable:
+The internal configuration key and command-line dataset name remain `bpc` for
+backward compatibility:
 
 ```bash
 python scripts/preflight.py --dataset bpc
@@ -103,7 +123,7 @@ python scripts/run_bpc.py --stage preprocess
 python scripts/run_bpc.py --stage model
 python scripts/run_bpc.py --stage evaluate
 python scripts/replay_frozen.py --dataset bpc
-python scripts/make_paper_outputs.py
+python scripts/make_paper_outputs.py --config configs/camera_ready.yaml
 python scripts/verify_artifact.py --level full
 ```
 
@@ -113,26 +133,20 @@ The equivalent one-command data-to-results run is:
 python scripts/run_bpc.py --download --stage all
 ```
 
-A reviewer with limited resources can omit the expensive low-tie group control:
+A limited-resource run can omit the expensive low-tie diagnostic score:
 
 ```bash
 python scripts/run_bpc.py --stage all --skip-low-tie-control
 ```
 
-Or, after preprocessing/model construction, test only the evaluator on a prefix:
+Subset outputs are labeled as such and are not compared with the paper-scale table.
 
-```bash
-python scripts/run_bpc.py --stage evaluate --max-rows 10000 --skip-low-tie-control
-```
+## Score definitions
 
-Subset metrics are labeled as such and are never compared with the paper-scale table.
+### Amazon rating-weighted attribute overlap
 
-## Exact score definitions
-
-### BPC historical `raw_count`
-
-The development identifier is retained for compatibility, but the operational
-quantity is rating weighted:
+The historical implementation name is `raw_count`, but the operational quantity is
+rating weighted:
 
 ```text
 y[r] = clip((rating[r] - 1) / 4, 0, 1)
@@ -140,36 +154,38 @@ S_raw[u,l] = sum_{training rows r of user u} y[r] * A[item[r],l]
 score_raw(u,i) = S_raw[u] dot A[i]
 ```
 
-It should be described as a **rating-weighted historical attribute total**, not as a
-literal unweighted event count.
+The paper therefore calls it **rating-weighted attribute overlap** rather than a
+literal interaction count.
 
-### BPC low-tie control
+### Amazon residualized diagnostic score
 
 The paper row `0.1689 -> 0.1685` corresponds to the development score `po_group`,
-renamed here as `residualized_group_control`. It combines item-side attribute
-residuals from three-fold masked-text propensity models with a cross-fitted
-user-plus-item-group outcome control. The simpler item-residual-only score is retained
-separately as `item_residual_only`; it is not the source of the reported low-tie row.
+exposed here as `residualized_group_control`. It combines item-side attribute
+residuals from three-fold masked-text propensity models with a cross-fitted user and
+user-by-item-group outcome control. The simpler item-residual-only score remains
+available as `item_residual_only`; it is not the source of the reported low-tie row.
 
-### MovieLens RawCount
+### MovieLens tag-attribute overlap
 
 MovieLens uses unweighted training-history counts of six thresholded Tag Genome
 attributes, followed by a user-count/item-attribute dot product.
 
 Full equations and implementation locations are in `docs/PAPER_TO_CODE.md`.
 
-## Tie policies
+## Tie treatments
 
-| Policy | Meaning | Row-order invariant? | Submitted table? |
-|---|---|---:|---:|
-| `stable_positive_first` | stable descending primary-score sort; input order resolves ties | No | Stable column |
-| `archived_float32` | historical 64-bit mixer converted to float32 before sorting | Not guaranteed under rare float32 collisions | Keyed column |
-| `hardened_uint64` | `(-score, uint64_key, item_id)` | Yes | Added reference |
-| `analytic_uniform_tie_expectation` | exact expected metric over positive positions in its tie block | Yes, as an expectation | Added reference |
-| `randomized` | repeated independent continuous secondary keys | In expectation | Added sensitivity analysis |
+| Policy | Meaning | Row-order invariant? | Role |
+|---|---|---:|---|
+| `stable_positive_first` | stable descending score sort; input order resolves ties | No | accepted input-order column |
+| `archived_float32` | historical 64-bit mixer converted to float32 before sorting | Not guaranteed under rare float32 collisions | accepted compatibility result |
+| `hardened_uint64` | sort by `(-score, uint64_key, item_id)` | Yes | reference deterministic implementation |
+| `analytic_uniform_tie_expectation` | exact expected metric over relevant-item positions in its tie block | Yes, as an expectation | camera-ready analysis |
+| `randomized` | repeated independent secondary-key seeds | In expectation | camera-ready sensitivity analysis |
 
-The archived policy is retained only for submitted-number compatibility. The hardened
-policy is the strict implementation of row-order invariance.
+The finite Amazon collision audit found one row with a distinct-item float32 collision
+inside a relevant score tie. It changed the internal ordering of tied items but did
+not change top-10 membership, the relevant item’s rank, or any reported aggregate
+metric. The hardened implementation passed the permutation-invariance checks.
 
 ## Output and replay contract
 
@@ -192,27 +208,30 @@ results/regenerated/<dataset>/
     replay_manifest.json
 ```
 
-`run_integrity_manifest.json` hashes the retained run outputs and upstream manifests.
-`replay_manifest.json` hashes the frozen replay inputs and requires replayed metrics
-to match the recorded run metrics. See `docs/RUN_OUTPUT_SCHEMA.md`.
+`run_integrity_manifest.json` hashes retained run inputs and outputs.
+`replay_manifest.json` hashes the frozen replay inputs and verifies replayed metrics
+against the recorded run. Floating-point comparisons use the declared tolerance; the
+packaged Amazon replay produced a maximum stored-output difference of
+`1.1102230246251565e-16`, below the `1e-12` verification threshold.
 
 ## Repository map
 
 ```text
-configs/paper.yaml                    paper parameters, seeds, targets, tolerances
+configs/paper.yaml                    accepted-submission parameters and 20-run check
+configs/camera_ready.yaml             camera-ready 100-seed analysis parameters
 src/tie_eval/                         data, scoring, ranking, metrics, diagnostics
 scripts/download_data.py              official-source downloads and checksums
 scripts/run_movielens.py               full MovieLens regeneration
-scripts/run_bpc.py                     staged BPC regeneration
+scripts/run_bpc.py                     staged Amazon regeneration
 scripts/replay_frozen.py               evaluator-only replay from saved rows/scores
-scripts/make_paper_outputs.py          Table 2 and Figure 1 data products
+scripts/make_paper_outputs.py          camera-ready Tables 2 and 3 data products
 scripts/verify_artifact.py             smoke, archive, and full verification
-scripts/preflight.py                   environment, disk, RAM, and data readiness
-results/archived/                      retained aggregate evidence and provenance
+results/archived/                      accepted aggregate evidence and provenance
+results/camera_ready/                  compact camera-ready Amazon summaries
 results/regenerated/                   locally generated outputs; not distributed
+docs/CAMERA_READY_PROVENANCE.md        historical/reconstructed/new evidence boundary
 examples/toy/                          data-free mechanism example
 tests/                                 unit and toy end-to-end tests
-docs/                                  reviewer, data, evidence, and limitation notes
 ```
 
 ## Resource guidance
@@ -221,22 +240,13 @@ docs/                                  reviewer, data, evidence, and limitation 
 |---|---:|---:|---:|
 | tests and archived verification | <2 GB | <1 GB | under a few minutes |
 | MovieLens full regeneration | 12–24 GB | 5–10 GB | roughly 10–40 minutes |
-| BPC raw/centered paper-scale audit | 32–64 GB | 40–80 GB | several hours |
-| BPC with cross-fitted group control | 64–96 GB recommended | 60–100 GB | several hours to more than one day |
+| Amazon raw/centered paper-scale audit | 32–64 GB | 40–80 GB | several hours |
+| Amazon with cross-fitted group control | 64–96 GB recommended | 60–100 GB | several hours to more than one day |
 
-Runtime depends on storage and CPU throughput. BPC downloads, staged Parquet files,
+Runtime depends on storage and CPU throughput. Amazon downloads, staged Parquet files,
 processed splits, propensity outputs, control predictions, and score artifacts are
 reused unless `--force` is supplied.
 
-## Validation boundary of this distributed ZIP
-
-The artifact-construction environment validated the code with unit tests and toy
-end-to-end runs, verified the retained aggregate evidence, rebuilt the paper table and
-figure from archived evidence, checked package hygiene, and verified the package checksum
-manifest. It did not complete the public-data MovieLens or BPC numerical regeneration
-because external dataset downloads were unavailable in that environment. The package
-therefore does not claim an unobserved full-data run; the exact commands and expected
-checks are provided for reviewer execution.
-
-Start with `docs/REVIEWER_GUIDE.md`. The most important evidence caveats are in
+Start with `docs/REVIEWER_GUIDE.md`. The evidence boundary for the final paper is in
+`docs/CAMERA_READY_PROVENANCE.md`; broader limitations are in
 `docs/KNOWN_LIMITATIONS.md`.

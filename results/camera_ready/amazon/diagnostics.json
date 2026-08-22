@@ -1,0 +1,58 @@
+{
+  "dataset": "Amazon Beauty and Personal Care 3-core",
+  "rows": 30000,
+  "candidates_per_row": 31,
+  "duplicate_candidate_identity_rows": 39,
+  "distinct_item_float32_key_collision_rows": 1,
+  "distinct_item_float32_key_collision_adjacent_pairs": 1,
+  "scores": {
+    "raw_count": {
+      "any_exact_tie_rows": 30000,
+      "topk_boundary_tie_rows": 29981,
+      "positive_in_tie_rows": 29651,
+      "mean_positive_tie_block_size_all_rows": 28.180133333333334,
+      "mean_positive_tie_block_size_when_tied": 28.500050588513034,
+      "max_positive_tie_block_size": 31
+    },
+    "centered_count": {
+      "any_exact_tie_rows": 30000,
+      "topk_boundary_tie_rows": 29982,
+      "positive_in_tie_rows": 27824,
+      "mean_positive_tie_block_size_all_rows": 21.5958,
+      "mean_positive_tie_block_size_when_tied": 23.206512363427258,
+      "max_positive_tie_block_size": 31
+    },
+    "residualized_group_control": {
+      "any_exact_tie_rows": 117,
+      "topk_boundary_tie_rows": 13,
+      "positive_in_tie_rows": 19,
+      "mean_positive_tie_block_size_all_rows": 1.0133,
+      "mean_positive_tie_block_size_when_tied": 22.0,
+      "max_positive_tie_block_size": 31
+    },
+    "item_residual_only": {
+      "any_exact_tie_rows": 1558,
+      "topk_boundary_tie_rows": 1456,
+      "positive_in_tie_rows": 1461,
+      "mean_positive_tie_block_size_all_rows": 2.4553,
+      "mean_positive_tie_block_size_when_tied": 30.882956878850102,
+      "max_positive_tie_block_size": 31
+    },
+    "po_factor": {
+      "any_exact_tie_rows": 117,
+      "topk_boundary_tie_rows": 14,
+      "positive_in_tie_rows": 19,
+      "mean_positive_tie_block_size_all_rows": 1.0133,
+      "mean_positive_tie_block_size_when_tied": 22.0,
+      "max_positive_tie_block_size": 31
+    },
+    "po_user": {
+      "any_exact_tie_rows": 118,
+      "topk_boundary_tie_rows": 13,
+      "positive_in_tie_rows": 20,
+      "mean_positive_tie_block_size_all_rows": 1.0133333333333334,
+      "mean_positive_tie_block_size_when_tied": 21.0,
+      "max_positive_tie_block_size": 31
+    }
+  }
+}

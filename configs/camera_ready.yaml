@@ -1,0 +1,151 @@
+# Camera-ready evaluator configuration.
+# This is intentionally separate from configs/paper.yaml, which preserves the
+# accepted-submission settings and 20-run randomized check.
+artifact:
+  schema_version: 1
+  paper_title: "Tie Handling Is Part of the Evaluation Protocol: An Order-Invariance Audit for Tie-Heavy Recommender Scores"
+  output_root: results/regenerated
+  global_seed: 42
+  candidate_count: 31
+  num_negatives: 30
+  cutoff: 10
+  save_candidate_rows: true
+  save_candidate_scores: true
+  batch_rows: 100000
+
+policies:
+  stable: stable_positive_first
+  paper_keyed: archived_float32
+  reference_keyed: hardened_uint64
+  bpc_key_seed: 20260316
+  movielens_key_seed: 20260318
+  randomized_repetitions: 100
+  randomized_seed_start: 20270000
+
+bpc:
+  name: Amazon Beauty & Personal Care (Amazon Reviews 2023)
+  download:
+    reviews_url: https://mcauleylab.ucsd.edu/public_datasets/data/amazon_2023/raw/review_categories/Beauty_and_Personal_Care.jsonl.gz
+    metadata_url: https://mcauleylab.ucsd.edu/public_datasets/data/amazon_2023/raw/meta_categories/meta_Beauty_and_Personal_Care.jsonl.gz
+    reviews_path: data/raw/bpc/Beauty_and_Personal_Care.jsonl.gz
+    metadata_path: data/raw/bpc/meta_Beauty_and_Personal_Care.jsonl.gz
+  preprocessing:
+    min_user_interactions: 3
+    min_item_interactions: 3
+    max_kcore_iterations: 25
+    test_holdout: 1
+    validation_holdout: 1
+    min_train_interactions: 1
+    outcome: scaled_rating
+    outcome_formula: "clip((rating - 1) / 4, 0, 1)"
+    id_mapping: lexicographically_sorted
+    duplicate_policy: last_source_row_after_sort_user_timestamp_item
+  labels:
+    names: [fragrance_free, cruelty_free, sulfate_free]
+    unknown_as_negative: true
+  propensity:
+    folds: 3
+    max_features: 15000
+    min_df: 2
+    C: 3.0
+    max_iter: 300
+    class_weight: balanced
+    trim_above: 0.95
+    random_seed: 42
+  group_control:
+    folds: 3
+    smoothing: 5.0
+    min_user_group_count: 2
+    min_item_group_support: 10
+    include_store: true
+    include_category: true
+    include_price_bucket: true
+    random_seed: 42
+  sampling:
+    seed: 42
+    mode: paper_compatible_rejection
+    history: train_plus_validation
+    positive_position: 0
+    negatives_unique: false
+  run:
+    max_rows: null
+    keep_intermediate: true
+  expected_dataset:
+    n_users: 2073945
+    n_items: 389478
+    n_train: 7528500
+    n_validation: 2073945
+    n_test: 2073945
+  expected_archived:
+    raw_count:
+      stable_ndcg_at_10: 0.8474
+      archived_keyed_ndcg_at_10: 0.1702
+      stable_hit_at_10: 0.9997
+      archived_keyed_hit_at_10: 0.3526
+      any_tie_rate: 1.0
+      boundary_tie_rate: 0.9994
+      positive_in_tie_rate: 0.9884
+    centered_count:
+      stable_ndcg_at_10: 0.7103
+      archived_keyed_ndcg_at_10: 0.1627
+    residualized_group_control:
+      stable_ndcg_at_10: 0.1689
+      archived_keyed_ndcg_at_10: 0.1685
+      any_tie_rate: 0.0039
+  tolerance:
+    metric_absolute: 0.002
+    dataset_count_absolute: 0
+
+movielens:
+  name: MovieLens 25M + Tag Genome
+  download:
+    zip_url: https://files.grouplens.org/datasets/movielens/ml-25m.zip
+    md5_url: https://files.grouplens.org/datasets/movielens/ml-25m.zip.md5
+    md5_path: data/raw/movielens/ml-25m.zip.md5
+    zip_path: data/raw/movielens/ml-25m.zip
+    extract_dir: data/raw/movielens/ml-25m
+    expected_md5: 6b51fb2759a8657d3bfcbfc42b592ada
+  preprocessing:
+    positive_rating_threshold: 4.0
+    selected_tags: [action, classic, visually appealing, based on a book, violence, sci-fi]
+    tag_threshold: 0.7
+    global_train_fraction: 0.8
+    global_validation_fraction: 0.1
+    global_test_fraction: 0.1
+    user_mapping: first_appearance_in_positive_rows
+    item_mapping: first_appearance_in_positive_rows
+    test_user_selection: first_10000_unique_users_in_global_test_split
+    test_positive_selection: first_row_per_selected_user
+  sampling:
+    seed: 42
+    mode: paper_compatible_set_choice
+    history: training_only
+    positive_position: 0
+    negatives_unique: true
+  run:
+    max_test_users: 10000
+    keep_score_matrices: false
+  expected_dataset:
+    n_users: 162341
+    n_items: 13816
+    n_train: 9887006
+    n_test: 10000
+  expected_archived:
+    raw_count:
+      stable_ndcg_at_10: 0.8379994706637517
+      archived_keyed_ndcg_at_10: 0.2332344277258390
+      stable_hit_at_10: 0.9390
+      archived_keyed_hit_at_10: 0.4358
+    centered_count:
+      stable_ndcg_at_10: 0.8406188962928598
+      archived_keyed_ndcg_at_10: 0.2340918413743282
+      stable_hit_at_10: 0.9451
+      archived_keyed_hit_at_10: 0.4358
+    popularity:
+      stable_ndcg_at_10: 0.5904872503030100
+      archived_keyed_ndcg_at_10: 0.5904653925774852
+      stable_hit_at_10: 0.7122
+      archived_keyed_hit_at_10: 0.7122
+  tolerance:
+    metric_absolute: 0.0005
+    dataset_count_absolute: 0

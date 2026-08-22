@@ -12,5 +12,5 @@ python scripts/run_movielens.py --config configs/paper.yaml
 python scripts/replay_frozen.py --dataset movielens --config configs/paper.yaml
 python scripts/run_bpc.py --config configs/paper.yaml --stage all
 python scripts/replay_frozen.py --dataset bpc --config configs/paper.yaml
-python scripts/make_paper_outputs.py --config configs/paper.yaml
+python scripts/make_paper_outputs.py --config configs/camera_ready.yaml
 python scripts/verify_artifact.py --level full --config configs/paper.yaml
